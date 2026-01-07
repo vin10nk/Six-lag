@@ -1,0 +1,126 @@
+-- Parent this to StarterGui
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local player = Players.LocalPlayer
+-- Remove old GUI if exists
+if player.PlayerGui:FindFirstChild("SixLaggerGUI") then
+    player.PlayerGui.SixLaggerGUI:Destroy()
+end
+-- Create ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "SixLaggerGUI"
+screenGui.Parent = player:WaitForChild("PlayerGui")
+-- Main Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 300, 0, 180)
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -90)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.BackgroundTransparency = 0.5
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = screenGui
+-- Neon Outline
+local outline = Instance.new("UIStroke")
+outline.Thickness = 2
+outline.Color = Color3.fromRGB(0, 170, 255)
+outline.Parent = mainFrame
+-- Rounded Corners
+local frameCorner = Instance.new("UICorner")
+frameCorner.CornerRadius = UDim.new(0, 18)
+frameCorner.Parent = mainFrame
+-- Title Bar
+local titleBar = Instance.new("Frame")
+titleBar.Size = UDim2.new(1, 0, 0, 40)
+titleBar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+titleBar.BackgroundTransparency = 0.5
+titleBar.BorderSizePixel = 0
+titleBar.Parent = mainFrame
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(1, -80, 1, 0)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "SIX LAGGER"
+titleLabel.Font = Enum.Font.SourceSansBold
+titleLabel.TextSize = 24
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.Parent = titleBar
+-- Status Label
+local statusLabel = Instance.new("TextLabel")
+statusLabel.Size = UDim2.new(1, -20, 0, 30)
+statusLabel.Position = UDim2.new(0, 10, 0, 70)
+statusLabel.BackgroundTransparency = 1
+statusLabel.Text = "READY"
+statusLabel.Font = Enum.Font.SourceSansBold
+statusLabel.TextSize = 20
+statusLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+statusLabel.Parent = mainFrame
+-- LAG BUTTON
+local lagButton = Instance.new("TextButton")
+lagButton.Size = UDim2.new(1, -20, 0, 50)
+lagButton.Position = UDim2.new(0, 10, 0, 110)
+lagButton.BackgroundColor3 = Color3.fromRGB(180, 80, 80)
+lagButton.Text = "LAG GAME"
+lagButton.Font = Enum.Font.SourceSansBold
+lagButton.TextSize = 24
+lagButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+lagButton.Parent = mainFrame
+lagButton.MouseEnter:Connect(function()
+    lagButton.BackgroundColor3 = Color3.fromRGB(220, 100, 100)
+end)
+lagButton.MouseLeave:Connect(function()
+    lagButton.BackgroundColor3 = Color3.fromRGB(180, 80, 80)
+end)
+------------------------------------------------
+-- EXTREME LAG FUNCTION
+------------------------------------------------
+local function spawnExtremeLag()
+    local lagFolder = Instance.new("Folder")
+    lagFolder.Name = "EXTREME_LAG"
+    lagFolder.Parent = Workspace
+    -- 100,000 particles (1000000000 emitters × 50000 rate)
+    for i = 10,100000000  do
+        local part = Instance.new("Part")
+        part.Size = Vector3.new(1,1,1)
+        part.Anchored = true
+        part.CanCollide = false
+        part.Transparency = 1
+        part.Position = Vector3.new(math.random(-100,100), math.random(5,50), math.random(-100,100))
+        part.Parent = lagFolder
+        local emitter = Instance.new("ParticleEmitter")
+        emitter.Color = ColorSequence.new(Color3.fromRGB(0,170,255))
+        emitter.LightEmission = 3
+        emitter.Size = NumberSequence.new(0.7)
+        emitter.Lifetime = NumberRange.new(5,15)
+        emitter.Rate = 50000
+        emitter.Speed = NumberRange.new(5,25)
+        emitter.VelocitySpread = 180
+        emitter.Parent = part
+    end
+    -- 5,0000 physical parts
+    for i = 1, 50000 do
+        local part = Instance.new("Part")
+        part.Size = Vector3.new(2,2,2)
+        part.Anchored = false
+        part.CanCollide = true
+        part.Material = Enum.Material.Neon
+        part.Color = Color3.fromRGB(0, 170, 255)
+        part.Position = Vector3.new(math.random(-100,100), math.random(5,50), math.random(-100,100))
+        part.Parent = lagFolder
+    end
+end
+------------------------------------------------
+-- CLICK = RUN 1000000000000000 TIMES
+------------------------------------------------
+local busy = false
+lagButton.MouseButton1Click:Connect(function()
+    if busy then return end
+    busy = true
+    statusLabel.Text = "RUNNING 1000000000000000X..."
+    statusLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+    -- Run lag 1000000000000000 times
+    for i = 1, 1000000000000000 do
+        spawnExtremeLag()
+        task.wait(0.2) -- tiny delay to avoid instant freeze
+    end
+    statusLabel.Text = "DONE"
+    statusLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+    busy = false
+end)
